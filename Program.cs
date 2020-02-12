@@ -228,7 +228,7 @@ namespace maliasmgr
         {
             Data.IProvider provider = null;
 
-            if (config.Provider == "AllInkl")
+            if (config.Provider == Provider.AllInkl.AllInklProvider.PROVIDER_KEY)
             {
                 provider = new Provider.AllInkl.AllInklProvider();
             }

@@ -15,6 +15,8 @@ namespace maliasmgr.Provider.AllInkl
     /// </summary>
     public sealed class AllInklProvider : Data.IProvider
     {
+        public const string PROVIDER_KEY = "AllInkl";
+
         /// <summary>
         /// Property Name of the All-Inkl Username in mailias.json Provider Config Array
         /// </summary>
