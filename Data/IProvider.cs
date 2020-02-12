@@ -8,6 +8,7 @@ namespace maliasmgr.Data
     /// </summary>
     public interface IProvider
     {
+        string ProviderKey { get; }
         void Configure(Data.MailiasConfig config);
         Task<IList<Data.Alias>> GetAliases();
         Task<Data.CreateResult> CreateAlias(string sourceAddress, string targetAddress);

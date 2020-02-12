@@ -15,8 +15,6 @@ namespace maliasmgr.Provider.AllInkl
     /// </summary>
     public sealed class AllInklProvider : Data.IProvider
     {
-        public const string PROVIDER_KEY = "AllInkl";
-
         /// <summary>
         /// Property Name of the All-Inkl Username in mailias.json Provider Config Array
         /// </summary>
@@ -77,6 +75,11 @@ namespace maliasmgr.Provider.AllInkl
         /// </summary>
         /// <returns>SOAP request generator</returns>
         private RequestGenerator Generator = new RequestGenerator();
+
+        /// <summary>
+        /// The providers key name, used in the mailias.json config
+        /// </summary>
+        public string ProviderKey => "AllInkl";
 
         /// <summary>
         /// Apply the configuration parameters to the provider

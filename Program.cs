@@ -16,6 +16,12 @@ namespace maliasmgr
 {
     public class Program
     {
+        // Available providers
+        private static Data.IProvider[] Providers = new Data.IProvider[] {
+            new Provider.AllInkl.AllInklProvider()
+            // add your providers here
+        };
+
         public static int Main(string[] args)
         {
             // Console output settings
@@ -226,20 +232,15 @@ namespace maliasmgr
         /// <returns>The created provider</returns>
         private static Data.IProvider CreateProvider(Data.MailiasConfig config)
         {
-            Data.IProvider provider = null;
+            Data.IProvider provider = Providers.SingleOrDefault(p => p.ProviderKey == config.Provider);
 
-            if (config.Provider == Provider.AllInkl.AllInklProvider.PROVIDER_KEY)
+            if (provider == null)
             {
-                provider = new Provider.AllInkl.AllInklProvider();
+                return null;
             }
 
-            if (provider != null)
-            {
-                provider.Configure(config);
-                return provider;
-            }
-
-            return null;
+            provider.Configure(config);
+            return provider;
         }
     }
 }
