@@ -38,6 +38,39 @@ Output:
 a.amazon.a4uth@example.com
 ```
 
+## Configuration
+
+```json
+{
+  "MailDomain": "example.com",
+  "TargetAddress": "christian@example.com",
+  "Prefix": "prefix",
+  "UniqeIdLength": 5,
+  "Provider": "ProviderName",
+  "ProviderConfig": [
+    { "Key": "KeyName", "Value": "KeyValue" }
+  ]
+}
+```
+
+| Config Property | Description |
+|---|---|
+| MailComain | Domain for creating mail aliases |
+| TargetAddress | Email address we will create aliases for |
+| Prefix | Prefix which is used on all aliases |
+| UniqueIdLength | Length of the random code to make the email address unguessable |
+| Provider | The used provider (see below) |
+| ProviderConfig | Provider-specific settings (credencials for example) |
+| ProviderConfig[i].Key | Name of one property required by a provider plugin |
+| ProviderConfig[i].Value | Value of one property required by a provider plugin |
+
+### Provider Config
+
+Each provider can have different configuration parameters.
+So these settings are designed to be completely dynamic.
+Which parameters are required depends on the provider which is used.
+See below.
+
 ## Supported Providers
 
 ### All-Inkl.com
