@@ -1,13 +1,13 @@
 # malias - Mail Alias Manager
 
 Generate unique email aliases for online services,
-detect data breaches and regenerate an address for 
+detect data breaches and regenerate an address for
 one service in case of spam.
 
 The tool adds an random code into the email address,
 so that the address cannot be guessed.
 
-```
+```txt
 <prefix>.<name>.<randomcode>@example.com
 a.amazon.a4uth@example.com
 ```
@@ -18,16 +18,13 @@ Current status: Early Alpha
 
 - [x] Provider System
 - [x] Configuration File
-- [x] Create alias
 - [x] List alias
+- [x] Create alias
+- [x] Detect existing aliases
+- [ ] Delete alias
 - [ ] Force recreation
 - [ ] Delete old variant of an alias
 - [ ] Silent (no output) mode
-
-Known issues:
-
-- `requests/all-inkl` is not included in build, so requests 
-  fail if the work directory is not the git root directory
 
 ## Create an alias
 
@@ -37,7 +34,7 @@ Known issues:
 
 Output:
 
-```
+```txt
 a.amazon.a4uth@example.com
 ```
 
