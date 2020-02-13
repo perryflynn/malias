@@ -21,7 +21,7 @@ Current status: Early Alpha
 - [x] List alias
 - [x] Create alias
 - [x] Detect existing aliases
-- [ ] Delete alias
+- [x] Delete alias
 - [ ] Force recreation
 - [ ] Delete old variant of an alias
 - [ ] Silent (no output) mode

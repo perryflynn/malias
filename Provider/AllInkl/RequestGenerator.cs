@@ -46,6 +46,11 @@ namespace maliasmgr.Provider.AllInkl
         const string REQ_ADDALIAS_NAME = "add_mailforward";
 
         /// <summary>
+        /// Action delete an existing alias
+        /// </summary>
+        const string REQ_DELALIAS_NAME = "delete_mailforward";
+
+        /// <summary>
         /// All-Inkl Username
         /// </summary>
         public string Username { get; set; }
@@ -143,6 +148,24 @@ namespace maliasmgr.Provider.AllInkl
 
             var node = requestDocument.XPathSelectElement(REQ_ACTION_XPATH, requestNsMgr);
             node.Value = this.CreateGetRequest(REQ_ADDALIAS_NAME, properties);
+
+            return await requestDocument.ToFullString();
+        }
+
+        /// <summary>
+        /// Create an SOAP Request which deletes an alias
+        /// </summary>
+        /// <param name="aliasAddress">The alias to delete</param>
+        /// <returns>SOAP XML String</returns>
+        public async Task<string> CreateDeleteAliasSoap(string aliasAddress)
+        {
+            dynamic properties = new ExpandoObject();
+            properties.mail_forward = aliasAddress;
+
+            var requestDocument = File.OpenText(REQ_ACTION).ParseXml(out XmlNamespaceManager requestNsMgr);
+
+            var node = requestDocument.XPathSelectElement(REQ_ACTION_XPATH, requestNsMgr);
+            node.Value = this.CreateGetRequest(REQ_DELALIAS_NAME, properties);
 
             return await requestDocument.ToFullString();
         }

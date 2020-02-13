@@ -71,6 +71,11 @@ namespace maliasmgr.Provider.AllInkl
         private const string ALLINKL_ERROR_ALIASEXISTS = "mail_forward_exists_as_forward";
 
         /// <summary>
+        /// Fault error code for "alias not found"
+        /// </summary>
+        private const string ALLINKL_ERROR_ALIASNOTFOUND = "mail_forward_not_found_in_kas";
+
+        /// <summary>
         /// Helper to generate the SOAP requests
         /// </summary>
         /// <returns>SOAP request generator</returns>
@@ -128,6 +133,41 @@ namespace maliasmgr.Provider.AllInkl
         }
 
         /// <summary>
+        /// Delete existing alias address
+        /// </summary>
+        /// <param name="fullEmailAddress">Full alias address to delete</param>
+        /// <returns>The request result</returns>
+        public async Task<DeleteResult> DeleteAliasAddress(string fullEmailAddress)
+        {
+            await this.EnsureAuthToken();
+
+            using(var webClient = new HttpClient())
+            {
+                // create request body and execute request
+                var requestBody = await this.Generator.CreateDeleteAliasSoap(fullEmailAddress);
+                var response = await webClient.ExecuteSoapRequest(ALLINKL_SOAPAPI_URL, ALLINKL_SOAPAPI_METHOD, requestBody);
+                var responseText = await response.Content.ReadAsStreamAsync();
+
+                // check result
+                var document = responseText.ParseXml(out XmlNamespaceManager responseNsMgr);
+                var isFailed = document.IsFailure(responseNsMgr, out string errorCode);
+
+                if (isFailed && errorCode == ALLINKL_ERROR_ALIASNOTFOUND)
+                {
+                    return DeleteResult.NotExists;
+                }
+                else if (isFailed)
+                {
+                    return DeleteResult.Fail;
+                }
+                else
+                {
+                    return DeleteResult.Success;
+                }
+            }
+        }
+
+        /// <summary>
         /// Get aliases list
         /// </summary>
         /// <returns>List of existing aliases</returns>
@@ -168,7 +208,8 @@ namespace maliasmgr.Provider.AllInkl
             return (await this.GetAliases())
                 .Where(a =>
                     (string.IsNullOrWhiteSpace(config.Prefix) || a.LocalPart.StartsWith(config.Prefix + ".")) &&
-                    a.Domain == config.MailDomain
+                    a.Domain == config.MailDomain &&
+                    a.TargetAddresses.Any(ta => ta == config.TargetAddress)
                 )
                 .ToList();
         }

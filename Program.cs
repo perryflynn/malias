@@ -51,10 +51,20 @@ namespace maliasmgr
             Parser.Default.ParseArguments<Args>(args).WithParsed(o =>
             {
 
+                if (o.Info)
+                {
+                    // Show current info
+                    returnCode = ShowInfo(config, o, provider);
+                }
                 if (!string.IsNullOrWhiteSpace(o.CreateName))
                 {
                     // Create a new alias
                     returnCode = CreateAlias(config, o, provider).WaitForValue<int>();
+                }
+                if (!string.IsNullOrWhiteSpace(o.DeleteAlias))
+                {
+                    // Delete an existing alias
+                    returnCode = DeleteAlias(config, o, provider).WaitForValue<int>();
                 }
                 else if (o.List)
                 {
@@ -84,6 +94,24 @@ namespace maliasmgr
             };
 
             return prompt.DoPrompt() == "y";
+        }
+
+        /// <summary>
+        /// Show current setup
+        /// </summary>
+        /// <param name="config">Config</param>
+        /// <param name="args">CMD Args</param>
+        /// <param name="provider">Provider</param>
+        /// <returns>Exit code</returns>
+        private static int ShowInfo(Data.MailiasConfig config, Args args, Data.IProvider provider)
+        {
+            CoEx.WriteLine($"Used Provider: {config.Provider}");
+            CoEx.WriteLine($"Mail Domain:   {config.MailDomain}");
+            CoEx.WriteLine($"Alias Target:  {config.TargetAddress}");
+            CoEx.WriteLine($"Prefix:        {config.Prefix}");
+            CoEx.WriteLine($"Code Length:   {config.UniqeIdLength}");
+
+            return 0;
         }
 
         /// <summary>
@@ -139,6 +167,43 @@ namespace maliasmgr
         }
 
         /// <summary>
+        /// Delete an existing alias
+        /// </summary>
+        /// <param name="config">Config</param>
+        /// <param name="args">CMD Args</param>
+        /// <param name="provider">Provider</param>
+        /// <returns>Exit Code</returns>
+        private static async Task<int> DeleteAlias(Data.MailiasConfig config, Args args, Data.IProvider provider)
+        {
+            var exists = (await provider.GetAliases(config))
+                .Any(alias => alias.SourceAddress == args.DeleteAlias);
+
+            if (exists)
+            {
+                if (YesNo("Really delete alias '" + args.DeleteAlias + "'?"))
+                {
+                    var result = await provider.DeleteAliasAddress(args.DeleteAlias);
+                    if (result == Data.DeleteResult.Success)
+                    {
+                        return 0;
+                    }
+
+                    CoEx.WriteLine("Delete failed.");
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                CoEx.WriteLine("Alias not found or didn't match the format of an alias which was created with this application.");
+                return 1;
+            }
+        }
+
+        /// <summary>
         /// List existing aliases
         /// </summary>
         /// <param name="config">Config</param>
@@ -152,21 +217,12 @@ namespace maliasmgr
 
             // Convert the alias items into table rows
             var aliases = (await provider.GetAliases(config))
-                .Select(a => new string[] { a.SourceAddress, string.Join(", ", a.TargetAddresses) })
+                .Select(a => a.SourceAddress)
                 .ToList();
 
             if(aliases.Count > 0)
             {
-                // draw a table
-                aliases.Insert(0, header);
-
-                var rows = RowCollection.Create(aliases.ToArray());
-                rows.Settings.Border.Enabled = true;
-
-                CoEx.WriteLine("Existing Aliases");
-                CoEx.WriteTable(rows);
-                CoEx.WriteLine();
-
+                CoEx.WriteLine(string.Join(Environment.NewLine, aliases));
                 return 0;
             }
             else
