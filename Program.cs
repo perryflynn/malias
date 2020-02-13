@@ -68,19 +68,6 @@ namespace maliasmgr
         }
 
         /// <summary>
-        /// Get existing aliases
-        /// </summary>
-        /// <param name="config">Config</param>
-        /// <param name="provider">Provider</param>
-        /// <returns>Exit code</returns>
-        private static async Task<IList<Data.Alias>> GetAliases(Data.MailiasConfig config, Data.IProvider provider)
-        {
-            return (await provider.GetAliases())
-                .Where(a => a.LocalPart.StartsWith(config.Prefix) && a.Domain == config.MailDomain)
-                .ToList();
-        }
-
-        /// <summary>
         /// Helper for a yes/no prompt
         /// </summary>
         /// <param name="question">Question to ask</param>
@@ -125,7 +112,7 @@ namespace maliasmgr
             var mailAddress = $"{prefix}{args.CreateName}.{key}@{config.MailDomain}";
 
             // Check if the email address already exists
-            var exists = (await GetAliases(config, provider))
+            var exists = (await provider.GetAliases(config))
                 .FirstOrDefault(a => a.SourceAddress.StartsWith($"{prefix}{args.CreateName}."));
 
             if (exists != null)
@@ -164,7 +151,7 @@ namespace maliasmgr
             var header = new string[] { "Source", "Targets" };
 
             // Convert the alias items into table rows
-            var aliases = (await GetAliases(config, provider))
+            var aliases = (await provider.GetAliases(config))
                 .Select(a => new string[] { a.SourceAddress, string.Join(", ", a.TargetAddresses) })
                 .ToList();
 

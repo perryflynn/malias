@@ -159,6 +159,21 @@ namespace maliasmgr.Provider.AllInkl
         }
 
         /// <summary>
+        /// Get aliases which was created by this application
+        /// </summary>
+        /// <param name="config">mailias.json configuration</param>
+        /// <returns>Aliases which match the prefix and domain</returns>
+        public async Task<IList<Data.Alias>> GetAliases(MailiasConfig config)
+        {
+            return (await this.GetAliases())
+                .Where(a =>
+                    (string.IsNullOrWhiteSpace(config.Prefix) || a.LocalPart.StartsWith(config.Prefix + ".")) &&
+                    a.Domain == config.MailDomain
+                )
+                .ToList();
+        }
+
+        /// <summary>
         /// Ensure authentication
         /// </summary>
         /// <returns>An async task to wait for</returns>

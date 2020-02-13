@@ -11,6 +11,7 @@ namespace maliasmgr.Data
         string ProviderKey { get; }
         void Configure(Data.MailiasConfig config);
         Task<IList<Data.Alias>> GetAliases();
+        Task<IList<Data.Alias>> GetAliases(MailiasConfig config);
         Task<Data.CreateResult> CreateAlias(string sourceAddress, string targetAddress);
     }
 }
