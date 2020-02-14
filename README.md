@@ -14,7 +14,7 @@ a.amazon.a4uth@example.com
 
 ## Options
 
-`maliasmgr --help`:
+`./malias --help`:
 
 ```txt
 maliasmgr 1.0.0
@@ -43,7 +43,7 @@ Copyright (C) 2020 maliasmgr
 ## Create an alias
 
 ```sh
-./publish/maliasmgr --create amazon
+./malias --create amazon
 ```
 
 Output:
@@ -119,5 +119,5 @@ git clone git@github.com:perryflynn/malias.git
 cd malias
 mkdir -p publish
 dotnet publish --self-contained -o publish/ -r linux-x64 -c Release .
-./publish/maliasmgr --list
+./publish/malias --list
 ```
