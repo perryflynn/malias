@@ -89,7 +89,7 @@ See below.
 
 ### All-Inkl.com
 
-Configuration Parameters for `~/mailias.json`:
+Configuration Parameters for `~/malias.json`:
 
 ```json
 {
