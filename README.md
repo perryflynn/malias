@@ -12,19 +12,33 @@ so that the address cannot be guessed.
 a.amazon.a4uth@example.com
 ```
 
-## Status
+## Options
 
-Current status: Early Alpha
+`maliasmgr --help`:
 
-- [x] Provider System
-- [x] Configuration File
-- [x] List alias
-- [x] Create alias
-- [x] Detect existing aliases
-- [x] Delete alias
-- [ ] Force recreation
-- [ ] Delete old variant of an alias
-- [ ] Silent (no output) mode
+```txt
+maliasmgr 1.0.0
+Copyright (C) 2020 maliasmgr
+
+  -c amazon, --create=amazon             What do you want to do?
+
+  -d a.amazon.fj292@example.com
+  --delete=a.amazon.fj292@example.com    Alias to delete
+
+  -l, --list                             List existing aliases
+
+  -i, --info                             Show current configuration
+
+  -f, --force                            Force the current operation
+
+  --delete-existing                      Delete existing alias with the same name
+
+  --silent                               No output
+
+  --help                                 Display this help screen.
+
+  --version                              Display version information.
+```
 
 ## Create an alias
 

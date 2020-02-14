@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <Title>malias</Title>
+    <Product>malias Email Alias Manager</Product>
+    <Copyright>Christian Blechert</Copyright>
+    <Version>$(BuildVersion)</Version>
+    <FileVersion>$(BuildVersion)</FileVersion>
+    <InformationalVersion>malias $(BuildVersion)</InformationalVersion>
+  </PropertyGroup>
+</Project>

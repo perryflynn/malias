@@ -143,11 +143,25 @@ namespace maliasmgr
             var exists = (await provider.GetAliases(config))
                 .FirstOrDefault(a => a.SourceAddress.StartsWith($"{prefix}{args.CreateName}."));
 
-            if (exists != null)
+            if (exists != null && args.Force == false)
             {
                 if (!YesNo($"There is already an alias ({exists.SourceAddress}) with this name. Proceed?"))
                 {
                     return 1;
+                }
+            }
+
+            // Delete the existing alias
+            if (exists != null && args.DeleteExisting)
+            {
+                if (args.Force || YesNo($"Dou you want do delete the existing alias '{exists.SourceAddress}', before creating a new one?"))
+                {
+                    var deleteExistingResult = await provider.DeleteAliasAddress(exists.SourceAddress);
+                    if (deleteExistingResult != Data.DeleteResult.Success && !args.Silent)
+                    {
+                        CoEx.WriteLine("Deleting existing alias failed.");
+                        return 1;
+                    }
                 }
             }
 
@@ -161,7 +175,11 @@ namespace maliasmgr
             }
             else
             {
-                CoEx.WriteLine("Creation failed.");
+                if (!args.Silent)
+                {
+                    CoEx.WriteLine("Creation failed.");
+                }
+
                 return 1;
             }
         }
@@ -180,7 +198,7 @@ namespace maliasmgr
 
             if (exists)
             {
-                if (YesNo("Really delete alias '" + args.DeleteAlias + "'?"))
+                if (args.Force || YesNo("Really delete alias '" + args.DeleteAlias + "'?"))
                 {
                     var result = await provider.DeleteAliasAddress(args.DeleteAlias);
                     if (result == Data.DeleteResult.Success)
@@ -188,7 +206,11 @@ namespace maliasmgr
                         return 0;
                     }
 
-                    CoEx.WriteLine("Delete failed.");
+                    if (!args.Silent)
+                    {
+                        CoEx.WriteLine("Delete failed.");
+                    }
+
                     return 1;
                 }
                 else
@@ -198,7 +220,11 @@ namespace maliasmgr
             }
             else
             {
-                CoEx.WriteLine("Alias not found or didn't match the format of an alias which was created with this application.");
+                if (!args.Silent)
+                {
+                    CoEx.WriteLine("Alias not found or didn't match the format of an alias which was created with this application.");
+                }
+
                 return 1;
             }
         }
@@ -228,7 +254,6 @@ namespace maliasmgr
             else
             {
                 // no aliases found
-                CoEx.WriteLine("No aliases found.");
                 return 1;
             }
         }
